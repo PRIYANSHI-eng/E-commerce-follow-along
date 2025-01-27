@@ -1,33 +1,17 @@
-const express = require('express');
-const path = require('path');
-const User = require('../model/user');  
+const express = require("express");
+const path = require("path");
+const User = require("../model/user");
 const router = express.Router();
-const {upload}=require('../multer');
-const ErrorHandler = require('../utils/ErrorHandler');
+const { upload } = require("../multer");
+const ErrorHandler = require("../utils/ErrorHandler");
+const catchAsyncErrors = require("../middleware/catchAsyncError");
+const jwt = require("jsonwebtoken");
+const sendMail = require("../utils/sendMail");
 
-//create user
-router.post(
-    "/create-user",
-    upload.single("file"),
-    async (req, res, next) => {
-        const { name, email, password } = req.body;
-        const userEmail = await User.findOne({ email });
-
-        if (userEmail) {
-            return next(new ErrorHandler("User already exists", 400));
-        }
-
-        const filename = req.file.filename;
-        const fileUrl = path.join(filename);
-        const user = {
-            name: name,
-            email: email,
-            password: password,
-            avatar: fileUrl,
-        };
-
-        console.log(user);
-    }
-);
-
+// create user
+router.post("/create-user", upload.single("file"), async (req, res) => {
+    console.log("create user");
+    console.log(req.body);
+    const { name, email, password } = req.body;
+});
 module.exports = router;
