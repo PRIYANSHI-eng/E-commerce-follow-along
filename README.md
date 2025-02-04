@@ -93,7 +93,7 @@ This milestone focused on designing and implementing a reusable card component t
    - Ensured a visually appealing layout to enhance user experience.  
 
 2. **Design the Homepage Layout:**  
-   - Implemented a grid or flexbox layout for structured product display.  
+   - Implement a grid or flexbox layout for structured product display.  
    - Used mapping to dynamically render multiple product cards with unique details.  
 
 This milestone improves product presentation, creating a clean and user-friendly browsing experience.
