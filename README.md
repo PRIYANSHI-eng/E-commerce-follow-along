@@ -97,3 +97,33 @@ This milestone focused on designing and implementing a reusable card component t
    - Used mapping to dynamically render multiple product cards with unique details.  
 
 This milestone improves product presentation, creating a clean and user-friendly browsing experience.
+
+###Milestone 9: Create Product Form
+
+In this milestone, we have successfully implemented a product creation form that allows users to input all necessary product details and upload multiple images. This form serves as the foundation for managing product data, which will eventually be stored in a database and displayed on the product homepage.
+
+Key Features Implemented
+
+Created a form to input product details, including:
+
+Product Name
+
+Description
+
+Category
+
+Tags
+
+Price
+
+Stock
+
+Email
+
+Product Images (multiple uploads supported)
+
+Implemented image preview functionality for uploaded images.
+
+Used React state management (useState) to handle form inputs dynamically.
+
+Configured React Router to include a new route for the product creation page.

@@ -86,240 +86,240 @@ router.post(
     }
   }
 );
-router.get("/get-products", async (req, res) => {
-    try {
-      const products = await Product.find();
-      const productsWithFullImageUrl = products.map((product) => {
-        if (product.images && product.images.length > 0) {
-          product.images = product.images.map((imagePath) => {
-            return imagePath;
-          });
-        }
-        return product;
-      });
-      res.status(200).json({ products: productsWithFullImageUrl });
-    } catch (err) {
-      console.error(" Server error:", err);
-      res.status(500).json({ error: "Server error. Could not fetch products." });
-    }
-  });
+// router.get("/get-products", async (req, res) => {
+//     try {
+//       const products = await Product.find();
+//       const productsWithFullImageUrl = products.map((product) => {
+//         if (product.images && product.images.length > 0) {
+//           product.images = product.images.map((imagePath) => {
+//             return imagePath;
+//           });
+//         }
+//         return product;
+//       });
+//       res.status(200).json({ products: productsWithFullImageUrl });
+//     } catch (err) {
+//       console.error(" Server error:", err);
+//       res.status(500).json({ error: "Server error. Could not fetch products." });
+//     }
+//   });
   
-  router.get("/my-products", async (req, res) => {
-    const { email } = req.query;
-    try {
-      const products = await Product.find({ email });
-      const productsWithFullImageUrl = products.map((product) => {
-        if (product.images && product.images.length > 0) {
-          product.images = product.images.map((imagePath) => {
-            return imagePath;
-          });
-        }
-        return product;
-      });
-      res.status(200).json({ products: productsWithFullImageUrl });
-    } catch (err) {
-      console.error(" Server error:", err);
-      res.status(500).json({ error: "Server error. Could not fetch products." });
-    }
-  });
+//   router.get("/my-products", async (req, res) => {
+//     const { email } = req.query;
+//     try {
+//       const products = await Product.find({ email });
+//       const productsWithFullImageUrl = products.map((product) => {
+//         if (product.images && product.images.length > 0) {
+//           product.images = product.images.map((imagePath) => {
+//             return imagePath;
+//           });
+//         }
+//         return product;
+//       });
+//       res.status(200).json({ products: productsWithFullImageUrl });
+//     } catch (err) {
+//       console.error(" Server error:", err);
+//       res.status(500).json({ error: "Server error. Could not fetch products." });
+//     }
+//   });
   
-  router.get("/product/:id", async (req, res) => {
-    console.log("Fetching product");
-    const { id } = req.params;
-    try {
-      const product = await Product.findById(id);
-      if (!product) {
-        return res.status(404).json({ error: "Product not found." });
-      }
-      res.status(200).json({ product });
-    } catch (err) {
-      console.error("Server error:", err);
-      res.status(500).json({ error: "Server error. Could not fetch product." });
-    }
-  });
+//   router.get("/product/:id", async (req, res) => {
+//     console.log("Fetching product");
+//     const { id } = req.params;
+//     try {
+//       const product = await Product.findById(id);
+//       if (!product) {
+//         return res.status(404).json({ error: "Product not found." });
+//       }
+//       res.status(200).json({ product });
+//     } catch (err) {
+//       console.error("Server error:", err);
+//       res.status(500).json({ error: "Server error. Could not fetch product." });
+//     }
+//   });
   
-  router.put(
-    "/update-product/:id",
-    pupload.array("images", 10),
-    async (req, res) => {
-      const { id } = req.params;
-      const { name, description, category, tags, price, stock, email } = req.body;
+//   router.put(
+//     "/update-product/:id",
+//     pupload.array("images", 10),
+//     async (req, res) => {
+//       const { id } = req.params;
+//       const { name, description, category, tags, price, stock, email } = req.body;
   
-      try {
-        const existingProduct = await Product.findById(id);
-        if (!existingProduct) {
-          return res.status(404).json({ error: "Product not found." });
-        }
+//       try {
+//         const existingProduct = await Product.findById(id);
+//         if (!existingProduct) {
+//           return res.status(404).json({ error: "Product not found." });
+//         }
   
-        let updatedImages = existingProduct.images;
-        if (req.files && req.files.length > 0) {
-          updatedImages = req.files.map((file) => {
-            return `/products/${path.basename(file.path)}`;
-          });
-        }
+//         let updatedImages = existingProduct.images;
+//         if (req.files && req.files.length > 0) {
+//           updatedImages = req.files.map((file) => {
+//             return `/products/${path.basename(file.path)}`;
+//           });
+//         }
   
-        const validationErrors = validateProductData({
-          name,
-          description,
-          category,
-          price,
-          stock,
-          email,
-        });
+//         const validationErrors = validateProductData({
+//           name,
+//           description,
+//           category,
+//           price,
+//           stock,
+//           email,
+//         });
   
-        if (validationErrors.length > 0) {
-          return res.status(400).json({ errors: validationErrors });
-        }
+//         if (validationErrors.length > 0) {
+//           return res.status(400).json({ errors: validationErrors });
+//         }
   
-        existingProduct.name = name;
-        existingProduct.description = description;
-        existingProduct.category = category;
-        existingProduct.tags = tags;
-        existingProduct.price = price;
-        existingProduct.stock = stock;
-        existingProduct.email = email;
-        existingProduct.images = updatedImages;
+//         existingProduct.name = name;
+//         existingProduct.description = description;
+//         existingProduct.category = category;
+//         existingProduct.tags = tags;
+//         existingProduct.price = price;
+//         existingProduct.stock = stock;
+//         existingProduct.email = email;
+//         existingProduct.images = updatedImages;
   
-        await existingProduct.save();
+//         await existingProduct.save();
   
-        res.status(200).json({
-          message: "✅ Product updated successfully",
-          product: existingProduct,
-        });
-      } catch (err) {
-        console.error("Server error:", err);
-        res
-          .status(500)
-          .json({ error: "Server error. Could not update product." });
-      }
-    }
-  );
-  router.delete("/delete-product/:id", async (req, res) => {
-    const { id } = req.params;
+//         res.status(200).json({
+//           message: "✅ Product updated successfully",
+//           product: existingProduct,
+//         });
+//       } catch (err) {
+//         console.error("Server error:", err);
+//         res
+//           .status(500)
+//           .json({ error: "Server error. Could not update product." });
+//       }
+//     }
+//   );
+//   router.delete("/delete-product/:id", async (req, res) => {
+//     const { id } = req.params;
   
-    try {
-      const existingProduct = await Product.findById(id);
-      if (!existingProduct) {
-        return res.status(404).json({ error: "Product not found." });
-      }
+//     try {
+//       const existingProduct = await Product.findById(id);
+//       if (!existingProduct) {
+//         return res.status(404).json({ error: "Product not found." });
+//       }
   
-      await existingProduct.deleteOne();
-      res.status(200).json({ message: "✅ Product deleted successfully" });
-    } catch (err) {
-      console.error("Server error:", err);
-      res.status(500).json({ error: "Server error. Could not delete product." });
-    }
-  });
+//       await existingProduct.deleteOne();
+//       res.status(200).json({ message: "✅ Product deleted successfully" });
+//     } catch (err) {
+//       console.error("Server error:", err);
+//       res.status(500).json({ error: "Server error. Could not delete product." });
+//     }
+//   });
   
-  router.post("/cart", async (req, res) => {
-    try {
-      const { userId, productId, quantity } = req.body;
-      const email = userId;
+//   router.post("/cart", async (req, res) => {
+//     try {
+//       const { userId, productId, quantity } = req.body;
+//       const email = userId;
   
-      if (!email) {
-        return res.status(400).json({ message: "Email is required" });
-      }
+//       if (!email) {
+//         return res.status(400).json({ message: "Email is required" });
+//       }
   
-      if (!mongoose.Types.ObjectId.isValid(productId)) {
-        return res.status(400).json({ message: "Invalid productId" });
-      }
+//       if (!mongoose.Types.ObjectId.isValid(productId)) {
+//         return res.status(400).json({ message: "Invalid productId" });
+//       }
   
-      if (!quantity || quantity < 1) {
-        return res.status(400).json({ message: "Quantity must be at least 1" });
-      }
+//       if (!quantity || quantity < 1) {
+//         return res.status(400).json({ message: "Quantity must be at least 1" });
+//       }
   
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ message: "User not found" });
-      }
+//       const user = await User.findOne({ email });
+//       if (!user) {
+//         return res.status(404).json({ message: "User not found" });
+//       }
   
-      const product = await Product.findById(productId);
-      if (!product) {
-        return res.status(404).json({ message: "Product not found" });
-      }
+//       const product = await Product.findById(productId);
+//       if (!product) {
+//         return res.status(404).json({ message: "Product not found" });
+//       }
   
-      const cartItemIndex = user.cart.findIndex(
-        (item) => item.productId.toString() === productId
-      );
+//       const cartItemIndex = user.cart.findIndex(
+//         (item) => item.productId.toString() === productId
+//       );
   
-      if (cartItemIndex > -1) {
-        user.cart[cartItemIndex].quantity += quantity;
-      } else {
-        user.cart.push({ productId, quantity });
-      }
+//       if (cartItemIndex > -1) {
+//         user.cart[cartItemIndex].quantity += quantity;
+//       } else {
+//         user.cart.push({ productId, quantity });
+//       }
   
-      await user.save();
+//       await user.save();
   
-      res.status(200).json({
-        message: "Cart updated successfully",
-        cart: user.cart,
-      });
-    } catch (error) {
-      console.error(error);
-      res.status(500).json({ message: "Server Error" });
-    }
-  });
+//       res.status(200).json({
+//         message: "Cart updated successfully",
+//         cart: user.cart,
+//       });
+//     } catch (error) {
+//       console.error(error);
+//       res.status(500).json({ message: "Server Error" });
+//     }
+//   });
   
-  // GET cart details endpoint
-  router.get("/cartproducts", async (req, res) => {
-    try {
-      const { email } = req.query;
-      if (!email) {
-        return res
-          .status(400)
-          .json({ error: "Email query parameter is required" });
-      }
-      const user = await User.findOne({ email }).populate({
-        path: "cart.productId",
-        model: "Product",
-      });
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
-      res.status(200).json({
-        message: "Cart retrieved successfully",
-        cart: user.cart,
-      });
-    } catch (err) {
-      console.error("Server error:", err);
-      res.status(500).json({ error: "Server Error" });
-    }
-  });
+//   // GET cart details endpoint
+//   router.get("/cartproducts", async (req, res) => {
+//     try {
+//       const { email } = req.query;
+//       if (!email) {
+//         return res
+//           .status(400)
+//           .json({ error: "Email query parameter is required" });
+//       }
+//       const user = await User.findOne({ email }).populate({
+//         path: "cart.productId",
+//         model: "Product",
+//       });
+//       if (!user) {
+//         return res.status(404).json({ error: "User not found" });
+//       }
+//       res.status(200).json({
+//         message: "Cart retrieved successfully",
+//         cart: user.cart,
+//       });
+//     } catch (err) {
+//       console.error("Server error:", err);
+//       res.status(500).json({ error: "Server Error" });
+//     }
+//   });
   
-  router.put("/cartproduct/quantity", async (req, res) => {
-    const { email, productId, quantity } = req.body;
-    console.log("Updating cart product quantity");
+//   router.put("/cartproduct/quantity", async (req, res) => {
+//     const { email, productId, quantity } = req.body;
+//     console.log("Updating cart product quantity");
   
-    if (!email || !productId || quantity === undefined) {
-      return res
-        .status(400)
-        .json({ error: "Email, productId, and quantity are required" });
-    }
+//     if (!email || !productId || quantity === undefined) {
+//       return res
+//         .status(400)
+//         .json({ error: "Email, productId, and quantity are required" });
+//     }
   
-    try {
-      const user = await User.findOne({ email });
-      if (!user) {
-        return res.status(404).json({ error: "User not found" });
-      }
+//     try {
+//       const user = await User.findOne({ email });
+//       if (!user) {
+//         return res.status(404).json({ error: "User not found" });
+//       }
   
-      const cartProduct = user.cart.find(
-        (item) => item.productId.toString() === productId
-      );
-      if (!cartProduct) {
-        return res.status(404).json({ error: "Product not found in cart" });
-      }
+//       const cartProduct = user.cart.find(
+//         (item) => item.productId.toString() === productId
+//       );
+//       if (!cartProduct) {
+//         return res.status(404).json({ error: "Product not found in cart" });
+//       }
   
-      cartProduct.quantity = quantity;
-      await user.save();
+//       cartProduct.quantity = quantity;
+//       await user.save();
   
-      res.status(200).json({
-        message: "Cart product quantity updated successfully",
-        cart: user.cart,
-      });
-    } catch (err) {
-      console.error("Server error:", err);
-      res.status(500).json({ error: "Server Error" });
-    }
-  });
+//       res.status(200).json({
+//         message: "Cart product quantity updated successfully",
+//         cart: user.cart,
+//       });
+//     } catch (err) {
+//       console.error("Server error:", err);
+//       res.status(500).json({ error: "Server Error" });
+//     }
+//   });
   
   module.exports = router;
