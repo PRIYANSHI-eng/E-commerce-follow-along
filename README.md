@@ -98,7 +98,7 @@ This milestone focused on designing and implementing a reusable card component t
 
 This milestone improves product presentation, creating a clean and user-friendly browsing experience.
 
-###Milestone 9:Create Product Form
+**###Milestone 9:Create Product Form**
 
 In this milestone, we have successfully implemented a product creation form that allows users to input all necessary product details and upload multiple images. This form serves as the foundation for managing product data, which will eventually be stored in a database and displayed on the product homepage.
 
@@ -131,7 +131,7 @@ Configured React Router to include a new route for the product creation page.
 ###Milestone 10: Product Management Enhancements
 
 
-Milestone 10 focuses on refining the product creation and management process. This includes improving the form submission flow, handling errors effectively, and ensuring a seamless user experience.
+**Milestone 10 focuses on refining the product creation and management process. This includes improving the form submission flow, handling errors effectively, and ensuring a seamless user experience.**
 
 Key Features Implemented
 
@@ -208,4 +208,22 @@ GitHub Repository: [Your Repository Link Here]
 Progress Summary: This milestone enhanced the product creation process by improving form submission, adding error handling, and integrating API communication.
 
 Submission: The repository has been updated, and all changes have been pushed successfully.
+**#Milestone 11 - Fetch and Display Products Data**
 
+In this milestone, we implemented the functionality to fetch all products from the backend and dynamically display them on the frontend using components.
+
+Backend (Node.js & Express)
+Created an API endpoint to send all product data from the backend to the frontend.
+Added a route in index.js to fetch product data.
+Used Mongoose to retrieve product details from the database.
+Sent the retrieved data as a JSON response.
+Frontend (React)
+Created a function to fetch product data from the backend.
+
+Used fetch or axios to make a GET request to the backend endpoint.
+Stored the response in a state variable using the useState hook.
+Used useEffect to trigger the data fetch on component mount.
+Displayed the data dynamically using the ProductCard component.
+
+Passed fetched product data as props to the ProductCard component.
+Rendered multiple ProductCard components dynamically using .map().
