@@ -260,3 +260,23 @@ By the end of this milestone, you will:
 - Enhance the UI with better styling and user experience.
 - Implement pagination if needed for better performance.
 - Add authentication checks to ensure only the logged-in user's products are displayed.
+
+**# Milestone 13: Edit Uploaded Products**
+🚀 Overview
+In this milestone, we implemented the Edit Product feature. Users can now update product details, with the form auto-filling existing data for a seamless editing experience.
+
+🎯 Key Features
+Edit Button added to product cards.
+Auto-Fill Form with existing product details.
+Update API to modify product data in MongoDB.
+Form Submission updates the database with new details.
+🛠️ Implementation Steps
+Backend: Created an API endpoint to update product details.
+Frontend: Added an edit button and handled navigation.
+Auto-Fill Form: Preloaded data when editing a product.
+Save Changes: Updated product details in the database.
+📂 How to Run
+Start the backend and frontend servers.
+Click "Edit" on a product to update details.
+Submit the form to save changes.
+📌 Submission
