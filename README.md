@@ -279,4 +279,19 @@ Save Changes: Updated product details in the database.
 Start the backend and frontend servers.
 Click "Edit" on a product to update details.
 Submit the form to save changes.
-📌 Submission
+
+
+
+**# Milestone 14 - Product Deletion Functionality 🚀**
+Overview
+In this milestone, we implemented the Delete Product functionality. Users can now remove products from the database using a delete button.
+
+Key Updates
+✅ Created a backend endpoint to delete a product by ID in MongoDB.
+✅ Updated the frontend to include a delete button for each product.
+✅ Integrated API calls to handle the deletion process.
+
+Submission
+Code is pushed to the GitHub repository.
+The repository is publicly accessible.
+Ready for submission in the assignment section.

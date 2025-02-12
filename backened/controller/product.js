@@ -126,7 +126,7 @@ router.post(
    });
   
   router.get("/product/:id", async (req, res) => {
-    console.log("Fetching product");
+    console.log("Fetching productS...");
     const { id } = req.params;
     try {
       const product = await Product.findById(id);
@@ -136,7 +136,7 @@ router.post(
       res.status(200).json({ product });
     } catch (err) {
       console.error("Server error:", err);
-      res.status(500).json({ error: "Server error. Could not fetch product." });
+      res.status(500).json({ error: "Server error. Could not fetch product..." });
     }
   });
   
