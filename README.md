@@ -375,3 +375,23 @@ This milestone enhances the user experience by providing a profile page to view 
 =======
 This milestone enhances the user experience by providing a profile page to view and manage their information.
 >>>>>>> 943119042a93f91878226e444f8fb56694117b29
+
+### 🏡 Address Form – Milestone 21
+📌 Overview
+This project implements a frontend Address Form that allows users to input their address details, including:
+
+Country
+City
+Address Line 1 & 2
+Zip Code
+Address Type
+🎯 Features
+✅ React-based address form
+✅ Uses state management to store input data
+✅ Navigates to the form when clicking "Add Address" in the profile page
+✅ Submits the form data via API
+
+📥 Submission
+Code pushed to GitHub
+Repository is publicly accessible
+README updated with progress
