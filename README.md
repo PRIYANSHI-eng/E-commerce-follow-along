@@ -370,4 +370,8 @@ In this milestone, we will build a frontend profile page to display user data an
 - Design a frontend profile page to display the user’s profile photo, name, email, and addresses.
 - Add a section for addresses with an “Add Address” button, and display “No address found” if no address exists.
 
+<<<<<<< HEAD
 This milestone enhances the user experience by providing a profile page to view and manage their information.
+=======
+This milestone enhances the user experience by providing a profile page to view and manage their information.
+>>>>>>> 943119042a93f91878226e444f8fb56694117b29
