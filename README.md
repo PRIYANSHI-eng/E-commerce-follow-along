@@ -347,3 +347,27 @@ Progress
 Developed an API Endpoint for the cart page.
 Created an endpoint to retrieve cart products for a user.
 Integrated the cart retrieval functionality with the backend.
+
+### Milestone 19: Cart Page UI and Quantity Adjustment
+Achievements
+In this milestone, I developed the cart page UI and added functionality for adjusting product quantities:
+
+Frontend: Created a Cart Page displaying products with options to increase or decrease the quantity using + and - buttons.
+Backend: Developed API endpoints to handle quantity adjustments for each product in the cart.
+User Interaction: Enabled real-time updates of the cart quantity on the frontend, ensuring a smooth user experience.
+Files Updated
+Cart page UI and API integration.
+Next Steps
+Implement functionality for removing items from the cart.
+Add total price calculation and checkout process.
+
+### Milestone 20: User Profile Page
+
+In this milestone, we will build a frontend profile page to display user data and create a backend endpoint to retrieve that data.
+
+#### Key Tasks:
+- Create a backend endpoint to send user data using their email.
+- Design a frontend profile page to display the user’s profile photo, name, email, and addresses.
+- Add a section for addresses with an “Add Address” button, and display “No address found” if no address exists.
+
+This milestone enhances the user experience by providing a profile page to view and manage their information.
