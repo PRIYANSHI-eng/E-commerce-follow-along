@@ -8,7 +8,7 @@ const CreateAddress = () => {
     const [city, setCity] = useState("");
     const [address1, setAddress1] = useState("");
     const [address2, setAddress2] = useState("");
-    const [zipCode, setZipCode] = useState("");
+    const [zipCode, setZipCode] = useState(""); 
     const [addressType, setAddressType] = useState("");
     const handleSubmit = async (e) => {
         e.preventDefault();
