@@ -371,6 +371,7 @@ In this milestone, we will build a frontend profile page to display user data an
 - Add a section for addresses with an “Add Address” button, and display “No address found” if no address exists.
 
 This milestone enhances the user experience by providing a profile page to view and manage their information.
+<<<<<<< HEAD
 
 ### Milestone 22 - Save Address in User Profile
 Overview
@@ -384,3 +385,28 @@ Submission Details
 Code pushed to GitHub repository.
 Repository is publicly accessible.
 This README summarizes the progress.
+=======
+=======
+This milestone enhances the user experience by providing a profile page to view and manage their information.
+>>>>>>> 943119042a93f91878226e444f8fb56694117b29
+
+### 🏡 Address Form – Milestone 21
+📌 Overview
+This project implements a frontend Address Form that allows users to input their address details, including:
+
+Country
+City
+Address Line 1 & 2
+Zip Code
+Address Type
+🎯 Features
+✅ React-based address form
+✅ Uses state management to store input data
+✅ Navigates to the form when clicking "Add Address" in the profile page
+✅ Submits the form data via API
+
+📥 Submission
+Code pushed to GitHub
+Repository is publicly accessible
+README updated with progress
+>>>>>>> 7c7d9646bf27ac8a84fdb628ba91e93af470797f
