@@ -371,24 +371,7 @@ In this milestone, we will build a frontend profile page to display user data an
 - Add a section for addresses with an “Add Address” button, and display “No address found” if no address exists.
 
 This milestone enhances the user experience by providing a profile page to view and manage their information.
-<<<<<<< HEAD
 
-### Milestone 22 - Save Address in User Profile
-Overview
-In this milestone, we created a backend endpoint to store user addresses in the database. The endpoint receives address details from the frontend form and appends them to the address array in the user collection.
-
-Learning Outcomes
-Implemented an API endpoint to handle address storage.
-Updated the user collection to include multiple addresses.
-Strengthened backend skills for handling user profiles.
-Submission Details
-Code pushed to GitHub repository.
-Repository is publicly accessible.
-This README summarizes the progress.
-=======
-=======
-This milestone enhances the user experience by providing a profile page to view and manage their information.
->>>>>>> 943119042a93f91878226e444f8fb56694117b29
 
 ### 🏡 Address Form – Milestone 21
 📌 Overview
@@ -409,4 +392,19 @@ Address Type
 Code pushed to GitHub
 Repository is publicly accessible
 README updated with progress
->>>>>>> 7c7d9646bf27ac8a84fdb628ba91e93af470797f
+
+
+### Milestone 22 - Save Address in User Profile
+Overview
+In this milestone, we created a backend endpoint to store user addresses in the database. The endpoint receives address details from the frontend form and appends them to the address array in the user collection.
+
+Learning Outcomes
+Implemented an API endpoint to handle address storage.
+Updated the user collection to include multiple addresses.
+Strengthened backend skills for handling user profiles.
+Submission Details
+Code pushed to GitHub repository.
+Repository is publicly accessible.
+This README summarizes the progress.
+
+
