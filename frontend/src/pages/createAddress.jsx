@@ -23,7 +23,7 @@ const CreateAddress = () => {
         };
         try {
             const response = await axios.post(
-                "http://localhost:8000/api/v2/user/add-address",
+                "http://localhost:3000/api/v2/user/add-address",
                 addressData,
                 {
                     headers: { "Content-Type": "application/json" },

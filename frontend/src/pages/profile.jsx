@@ -13,7 +13,7 @@ export default function Profile() {
 	const navigate = useNavigate();
 	useEffect(() => {
 		fetch(
-			`http://localhost:8000/api/v2/user/profile?email=${"validuser@gmail.com"}`,
+			`http://localhost:3000/api/v2/user/profile?email=${"validuser@gmail.com"}`,
 			{
 				method: "GET",
 				headers: {
@@ -56,7 +56,7 @@ export default function Profile() {
 									PICTURE
 								</div>
 								<img
-									src={personalDetails.avatarUrl ? `http://localhost:8000/${personalDetails.avatarUrl}` : `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`}
+									src={personalDetails.avatarUrl ? `http://localhost:3000/${personalDetails.avatarUrl}` : `https://cdn.vectorstock.com/i/500p/17/61/male-avatar-profile-picture-vector-10211761.jpg`}
 									alt="profile"
 									className="w-40 h-40 rounded-full"
 									onError={(e) => {
