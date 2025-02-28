@@ -438,3 +438,27 @@ README updated ✅
 
 
 >>>>>>> 56fdef6e12d40aa9e818bf115354b505d027196d
+
+
+### Milestone 24 - Order Confirmation Page 🚀
+Overview
+In this milestone, we implemented the Order Confirmation Page, where users can review their order details before finalizing the purchase.
+
+Key Features
+✅ Display all the ordered products.
+✅ Show the selected delivery address.
+✅ Calculate and display the total price of the cart.
+✅ Provide a "Place Order" button to confirm the purchase.
+
+Implementation Steps
+1️⃣ Fetch and display ordered products.
+2️⃣ Show the selected address for delivery.
+3️⃣ Calculate the total order value dynamically.
+4️⃣ Add a "Place Order" button to proceed with checkout.
+
+Submission Details
+📌 Code pushed to GitHub 📂
+📌 Public repository link updated 🔗
+📌 Assignment submitted successfully ✅
+
+🎉 Milestone 24 completed!
