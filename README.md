@@ -405,8 +405,7 @@ Strengthened backend skills for handling user profiles.
 Submission Details
 Code pushed to GitHub repository.
 Repository is publicly accessible.
-This README summarizes the progress.
-<<<<<<< HEAD
+
 =======
 =======
 
@@ -433,7 +432,6 @@ README updated ✅
 =======
 
 
->>>>>>> 56fdef6e12d40aa9e818bf115354b505d027196d
 
 
 ### Milestone 24 - Order Confirmation Page 🚀
@@ -458,3 +456,42 @@ Submission Details
 📌 Assignment submitted successfully ✅
 
 🎉 Milestone 24 completed!
+
+# Milestone 25 - Place Order Endpoint  
+
+## Overview  
+In this milestone, we created a backend endpoint to handle order placement in our e-commerce application.  
+
+## Key Tasks  
+- Developed an endpoint to receive product, user, and address details.  
+- Retrieved the user's `_id` using their email.  
+- Created separate orders for each product with the same address.  
+- Stored order details in the MongoDB `orders` collection using the order schema.  
+
+## Learning Outcome  
+- Gained experience in handling order processing through a backend API.  
+
+## Submission  
+- Code pushed to GitHub (public repository).  
+- README updated with milestone progress.  
+- Repository link shared for submission.  
+
+
+# Milestone 26 - Get User Orders Endpoint  
+
+## Overview  
+In this milestone, we created a backend endpoint to retrieve all orders placed by a user.  
+
+## Key Tasks  
+- Developed an endpoint that receives the user's email.  
+- Retrieved the user's `_id` using their email.  
+- Fetched all orders associated with the user's `_id` from the database.  
+- Sent the list of orders in the response.  
+
+## Learning Outcome  
+- Gained experience in fetching and managing user-specific order data.  
+
+## Submission  
+- Code pushed to GitHub (public repository).  
+- README updated with milestone progress.  
+- Repository link shared for submission.  
