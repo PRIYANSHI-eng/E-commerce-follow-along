@@ -394,10 +394,6 @@ Repository is publicly accessible
 README updated with progress
 
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 56fdef6e12d40aa9e818bf115354b505d027196d
 ### Milestone 22 - Save Address in User Profile
 Overview
 In this milestone, we created a backend endpoint to store user addresses in the database. The endpoint receives address details from the frontend form and appends them to the address array in the user collection.
