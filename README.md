@@ -544,3 +544,20 @@ In this milestone, we enhanced the **My Orders** page by adding a **Cancel Order
 - Repository link submitted as per guidelines.  
 
 🚀 **Milestone 28 completed successfully!**
+
+
+### Milestone 29 - PayPal Integration
+### Milestone Overview
+In this milestone, I have started integrating an online payment gateway using the PayPal API in my application.
+
+Key Implementations
+✔ Created a PayPal Developer Account and set up a Sandbox Account.
+✔ Retrieved and saved the Sandbox User ID and Client ID.
+✔ Updated the order confirmation page with two payment options:
+
+Cash on Delivery (COD)
+Online Payment via PayPal
+✔ Implemented radio buttons to toggle between COD and PayPal payment.
+✔ Prepared the UI to display PayPal payment buttons (to be coded in the next milestone).
+Next Steps
+Implement the functionality for PayPal payment processing in the upcoming milestone.
