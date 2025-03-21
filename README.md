@@ -561,3 +561,42 @@ Online Payment via PayPal
 ✔ Prepared the UI to display PayPal payment buttons (to be coded in the next milestone).
 Next Steps
 Implement the functionality for PayPal payment processing in the upcoming milestone.
+
+# Milestone 30 - PayPal Payment Integration
+
+This project implements an online payment gateway using the PayPal API in a React application.
+
+## Features
+- Integrated PayPal API for secure payments.
+- Used `react-paypal-js` for seamless UI integration.
+- Supports multiple payment methods like credit/debit cards.
+
+## Installation
+1. Clone the repository:
+    ```bash
+    git clone <repository-url>
+    ```
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Add your PayPal client key in a `.env` file:
+    ```env
+    REACT_APP_PAYPAL_CLIENT_ID=your-client-id
+    ```
+4. Start the application:
+    ```bash
+    npm run dev
+    ```
+
+## Usage
+- Access the payment page and proceed with PayPal payment.
+
+## Technologies Used
+- React
+- PayPal API
+- react-paypal-js
+
+---
+
+✅ Successfully completed Milestone 30.  
