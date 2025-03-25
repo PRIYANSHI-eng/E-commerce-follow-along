@@ -600,3 +600,39 @@ This project implements an online payment gateway using the PayPal API in a Reac
 ---
 
 ✅ Successfully completed Milestone 30.  
+
+
+# Milestone 31: Global State Management with Redux
+
+## Overview
+In this milestone, I implemented global state management using **Redux** to store user data.
+
+## Features Implemented
+- Installed `react-redux` for state management.
+- Created a `store` folder with:
+  - **store.js**: Configured a Redux store with a `userReducer` to manage user email state.
+  - **userActions.js**: Implemented a `setEmail` action to update the email in the global state.
+- Wrapped the App component with the Redux `Provider` in **index.js**.
+
+## Installation
+1. Clone the repository:
+    ```bash
+    git clone <repo-link>
+    ```
+2. Install dependencies:
+    ```bash
+    npm install
+    ```
+3. Start the project:
+    ```bash
+    npm run dev
+    ```
+
+## Usage
+- The global state now holds the user email, which can be accessed and updated from any component.
+
+## Next Steps
+- In the next milestone, I will implement email state management across components.
+
+
+

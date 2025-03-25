@@ -1,9 +1,31 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
-
-const Login = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+ import { Link } from "react-router-dom";
+ import axios from "axios";
+ import { useDispatch } from 'react-redux';
+  import { setemail } from "../../store/userActions";
+ 
+ const Login = () => {
+   const [email, setEmail] = useState("");
+   const [password, setPassword] = useState("");
+   const [error, setError] = useState(""); // For handling error messages
+ 
+   // Handle form submission
+   const handleSubmit = async (e) => {
+     e.preventDefault(); // Prevent the default form submit behavior
+     try {
+       // Make the POST request to the backend (replace with your actual API endpoint)
+       const response = await axios.post("http://localhost:3000/api/v2/user/login", { email, password });
+ 
+       // Assuming response contains a token or user data on successful login
+       console.log(response.data);
+       // Redirect or take some action upon successful login here
+     } catch (error) {
+       // Handle errors (e.g., invalid credentials)
+       setError("There was an error logging in. Please check your credentials.");
+       console.error("There was an error logging in!", error);
+     }
+   };
+ 
 
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
