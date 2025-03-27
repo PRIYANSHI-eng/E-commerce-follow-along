@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react";
 import Myproduct from "../components/auth/myproduct";
 import NavBar from "../components/auth/nav";
+import { useSelector } from "react-redux";
 
 export default function MyProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [email, setEmail] = useState("");
 
+    const state = useSelector((state) => state);
+ console.log(state);
+     const email = useSelector((state) => state.user.email);
+    
     const fetchProducts = (email) => {
         if (!email) return;
         setLoading(true);

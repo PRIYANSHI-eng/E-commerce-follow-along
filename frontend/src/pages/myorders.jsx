@@ -1,19 +1,22 @@
 import { useState, useEffect } from 'react';
  import axios from 'axios';
- import NavBar from '../components/auth/nav'
+ import NavBar from '../components/auth/nav';
+ import { useSelector } from 'react-redux'; 
  
  const MyOrdersPage = () => {
      const [orders, setOrders] = useState([]);
-     const defaultEmail = 'validuser@gmail.com';
+     
      const [loading, setLoading] = useState(false);
      const [error, setError] = useState('');
+     const email = useSelector((state) => state.user.email);
 
      const fetchOrders = async () => {
+        if (!email) return;
          try {
              setLoading(true);
              setError('');
              const response = await axios.get('http://localhost:3000/api/v2/orders/myorders', {
-                 params: { email: defaultEmail },
+                 params: { email: email},
              });
              setOrders(response.data.orders);
          } catch (err) {
@@ -43,7 +46,7 @@ import { useState, useEffect } from 'react';
  
      useEffect(() => {
          fetchOrders();
-     }, []);
+     }, [email]);
  
      return (
          <>

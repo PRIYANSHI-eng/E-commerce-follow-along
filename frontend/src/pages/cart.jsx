@@ -3,11 +3,13 @@ import React, { useState, useEffect } from 'react';
 import CartProduct from '../components/auth/CartProduct';
 import NavBar from '../components/auth/nav';
 import { useNavigate } from 'react-router-dom'; // Import the useNavigate hook
+import { useSelector } from 'react-redux';
 
 const Cart = () => {
 
   const [products, setProducts] = useState([]);
   const navigate = useNavigate(); // Initialize navigate
+  const email = useSelector((state) => state.user.email);
 
   useEffect(() => {
     fetch(`http://localhost:3000/api/v2/product/cartproducts?email=${'validuser@gmail.com'}`)
