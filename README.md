@@ -635,4 +635,37 @@ In this milestone, I implemented global state management using **Redux** to stor
 - In the next milestone, I will implement email state management across components.
 
 
+Milestone 32: Global State Management with Redux
+Overview
+In this milestone, we implemented Redux to manage the global state for user authentication. Specifically, we stored the user's email in the Redux store and accessed it across all pages.
 
+Steps Completed
+✅ Used useDispatch to store the email in the global state upon login.
+✅ Used useSelector to access the email across all pages.
+✅ Integrated Redux for centralized state management.
+
+Technologies Used
+React
+
+Redux Toolkit
+
+React-Redux
+
+### Milestone 33: JWT Token & Cookie Storage
+Overview
+In this milestone, we implemented JSON Web Token (JWT) authentication by generating a token and storing it in a cookie for secure session management.
+
+Steps Completed
+✅ Installed jsonwebtoken package using NPM.
+✅ Used sign method to generate a JWT with email and user ID.
+✅ Set maxAge to define the token expiration time.
+✅ Stored the JWT inside a cookie in the response.
+
+Technologies Used
+Node.js
+
+Express.js
+
+JSON Web Token (JWT)
+
+Cookie Parser
