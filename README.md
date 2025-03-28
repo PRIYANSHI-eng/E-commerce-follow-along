@@ -701,6 +701,10 @@ Ensure that only logged-in users can access protected data.
 Redirect users to the login page if they are not authenticated.
 
 Prevent navigation to protected pages without a valid session.
+---
+
+### Milestone 35: Deployment done.
+- Frontend & Backend Deployed.
 
 Conclusion
 By implementing JWT validation, we enhance security and ensure users can only access resources they are authorized for. 🚀
