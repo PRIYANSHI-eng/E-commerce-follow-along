@@ -10,6 +10,7 @@ const jwt = require("jsonwebtoken");
 // const sendMail = require("../utils/sendMail");
 const bcrypt = require("bcryptjs");
 require("dotenv").config();
+const { isAuthenticatedUser } = require('../middleware/auth');
 
 router.post(
     "/create-user",

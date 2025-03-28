@@ -634,8 +634,8 @@ In this milestone, I implemented global state management using **Redux** to stor
 ## Next Steps
 - In the next milestone, I will implement email state management across components.
 
-
-Milestone 32: Global State Management with Redux
+ 
+### Milestone 32: Global State Management with Redux
 Overview
 In this milestone, we implemented Redux to manage the global state for user authentication. Specifically, we stored the user's email in the Redux store and accessed it across all pages.
 
@@ -669,3 +669,38 @@ Express.js
 JSON Web Token (JWT)
 
 Cookie Parser
+
+### Milestone 34: JWT Token Validation
+Overview
+This milestone focuses on implementing JWT authentication by validating the token stored in cookies. It ensures that only authenticated users can access protected routes.
+
+Learning Goals
+Extract the JWT token from browser cookies and send it to the server.
+
+Validate the received JWT token on the backend.
+
+Prevent unauthorized users from accessing protected pages.
+
+Implementation Steps
+1️⃣ Extract JWT Token from Cookies
+The frontend retrieves the token stored in cookies and sends it with requests to the server.
+
+Ensure that requests include credentials for secure authentication.
+
+2️⃣ Validate JWT Token in Backend
+The backend middleware extracts and verifies the token using a secret key.
+
+If valid, the user is granted access; otherwise, an error response is sent.
+
+3️⃣ Protect Routes
+Apply authentication checks to restrict access to certain API endpoints.
+
+Ensure that only logged-in users can access protected data.
+
+4️⃣ Enforce Authentication in Frontend
+Redirect users to the login page if they are not authenticated.
+
+Prevent navigation to protected pages without a valid session.
+
+Conclusion
+By implementing JWT validation, we enhance security and ensure users can only access resources they are authorized for. 🚀

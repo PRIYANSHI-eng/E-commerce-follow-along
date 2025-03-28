@@ -2,29 +2,23 @@ import { useEffect, useState } from "react";
 import Myproduct from "../components/auth/myproduct";
 import NavBar from "../components/auth/nav";
 import { useSelector } from "react-redux";
+import axios from "../axiosConfig";
 
 export default function MyProducts() {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-
+    // Get the email from Redux state
     const state = useSelector((state) => state);
- console.log(state);
-     const email = useSelector((state) => state.user.email);
-    
-    const fetchProducts = (email) => {
-        if (!email) return;
-        setLoading(true);
-        setError(null);
-        fetch(`http://localhost:3000/api/v2/product/my-products?email=${email}`)
+console.log(state);
+    const email = useSelector((state) => state.user.email);
+
+    useEffect(() => {
+        // Only fetch if email is available
+         if (!email) return;
+         axios.get(`/api/v2/product/my-products?email=${email}`)
             .then((res) => {
-                if (!res.ok) {
-                    throw new Error(`HTTP error! status: ${res.status}`);
-                }
-                return res.json();
-            })
-            .then((data) => {
-                setProducts(data.products || []);
+                setProducts(res.data.products);
                 setLoading(false);
             })
             .catch((err) => {
@@ -32,33 +26,22 @@ export default function MyProducts() {
                 setError(err.message);
                 setLoading(false);
             });
-    };
+    }, [email]);
+
+    if (loading) {
+        return <div className="text-center text-white mt-10">Loading products...</div>;
+    }
+
+    if (error) {
+        return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
+    }
+
 
     return (
         <>
             <NavBar />
             <div className="w-full min-h-screen bg-neutral-800">
                 <h1 className="text-3xl text-center text-white py-6">My products</h1>
-                <div className="flex justify-center mb-4">
-                <input
-                    type="email"
-                    placeholder="Enter email to filter"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="p-2 border rounded text-black"
-                />
-                <button
-                    onClick={() => fetchProducts(email)}
-                    className="ml-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 rounded"
-                >
-                    Search
-                </button>
-            </div>
-            {loading && <div className="text-center">Loading products...</div>}
-            {error && <div className="text-center text-red-500">Error: {error}</div>}
-            {!loading && !error && products.length === 0 && (
-                <div className="text-center text-gray-400">Product not created.</div>
-            )}
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4">
                     {products.map((product) => (
                         <Myproduct key={product._id} {...product} />
