@@ -1,13 +1,10 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
 import styles from "../../styles/styles";
-import axios from "axios";
+import axios from "../../axiosConfig"; // Use the configured axios instance
 import { useDispatch } from "react-redux";
 import { setemail } from "../../store/userActions";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
-
-// Ensure axios sends cookies with requests
-axios.defaults.withCredentials = true;
 
 const Login = () => {
   const dispatch = useDispatch();
@@ -19,15 +16,27 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post("http://localhost:3000/api/v2/user/login", { email, password }, {withCredentials: true,});
+      const response = await axios.post("/api/v2/user/login", { email, password });
       console.log(response.data);
+      
+      // Store user info in localStorage
+      if (response.data.user) {
+        localStorage.setItem("user", JSON.stringify(response.data.user));
+      }
+      
+      // Store token in localStorage if it's in the response
+      if (response.data.token) {
+        localStorage.setItem("token", response.data.token);
+      }
+      
       alert("Logged in successfully!");
-      // Dispatch email to Redux state (token is now handled via cookies)
+      // Dispatch email to Redux state
       dispatch(setemail(email));
       // Redirect to home or profile page after successful login
       navigate("/");
     } catch (error) {
       console.error("There was an error logging in!", error);
+      alert("Login failed. Please check your credentials.");
     }
   };
 
@@ -88,13 +97,13 @@ const Login = () => {
               </div>
             </div>
 
-            <div className={`${styles.noramlFlex} justify-between`}>
-              <div className={`${styles.noramlFlex}`}>
+            <div className={`${styles.flexBetween}`}>
+              <div className={`${styles.normalFlex}`}>
                 <input
                   type="checkbox"
                   name="remember-me"
                   id="remember-me"
-                  className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded"
+                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
                 />
                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                   Remember me
@@ -103,7 +112,7 @@ const Login = () => {
               <div className="text-sm">
                 <a
                   href=".forgot-password"
-                  className="font-medium text-blue-600 hover:text-blue-500"
+                  className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200"
                 >
                   Forgot your password?
                 </a>
@@ -113,14 +122,17 @@ const Login = () => {
             <div>
               <button
                 type="submit"
-                className="group relative w-full h-[40px] flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+                className="btn-primary w-full h-10 flex justify-center items-center"
               >
-                Submit
+                Sign In
               </button>
             </div>
 
-            <div className={`${styles.noramlFlex} w-full`}>
-              <h4>Not have any account?</h4>
+            <div className={`${styles.normalFlex} w-full justify-center mt-4`}>
+              <p className="text-gray-600">Don&#39;t have an account?</p>
+              <a href="/signup" className="ml-2 font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
+                Sign up
+              </a>
             </div>
           </form>
         </div>

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import axios from '../../axiosConfig'; // Use the configured axios instance
 
 function Myproduct({ _id, name, images, description, price }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -22,9 +22,19 @@ function Myproduct({ _id, name, images, description, price }) {
 
     const handleDelete = async () => {
         try {
+            // Check if user is authenticated
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert("You need to be logged in to delete products");
+                navigate('/login');
+                return;
+            }
+            
+            // Use the configured axios instance with the correct URL
             const response = await axios.delete(
-                `http://localhost:3000/api/v2/product/delete-product/${_id}`
+                `/api/v2/product/delete-product/${_id}`
             );
+            
             if (response.status === 200) {
                 alert("Product deleted successfully!");
                 // Reload the page or fetch products again
@@ -32,7 +42,12 @@ function Myproduct({ _id, name, images, description, price }) {
             }
         } catch (err) {
             console.error("Error deleting product:", err);
-            alert("Failed to delete product.");
+            if (err.response && err.response.status === 401) {
+                alert("Your session has expired. Please login again.");
+                navigate('/login');
+            } else {
+                alert("Failed to delete product: " + (err.response?.data?.message || "Unknown error"));
+            }
         }
     };
 

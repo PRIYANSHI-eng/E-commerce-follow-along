@@ -5,6 +5,7 @@ const User = require("../model/user");
 const router = express.Router();
 const { pupload } = require("../multer");
 const path = require('path');
+const fs = require('fs');
 const { isAuthenticatedUser } = require('../middleware/auth');
 
 const validateProductData = (data) => {
@@ -21,36 +22,69 @@ const validateProductData = (data) => {
 };
 router.post(
   "/create-product", isAuthenticatedUser, 
+  (req, res, next) => {
+    console.log("🛒 Starting product creation process");
+    console.log("Authenticated user:", req.user);
+    
+    // Check if products directory exists
+    const productsDir = path.join(__dirname, "../products");
+    if (!fs.existsSync(productsDir)) {
+      console.log("Creating products directory:", productsDir);
+      try {
+        fs.mkdirSync(productsDir, { recursive: true });
+        console.log("Products directory created successfully");
+      } catch (err) {
+        console.error("Error creating products directory:", err);
+        return res.status(500).json({ error: "Failed to create upload directory" });
+      }
+    }
+    
+    next();
+  },
   pupload.array("images", 10),
   async (req, res) => {
-    console.log("🛒 Creating product");
-    const { name, description, category, tags, price, stock, email } = req.body;
-    // Map uploaded files to accessible URLs
-    const images = req.files.map((file) => {
-      return `/products/${path.basename(file.path)}`;
-    });
-    // Validate input data
-    const validationErrors = validateProductData({
-      name,
-      description,
-      category,
-      price,
-      stock,
-      email,
-    });
-    if (validationErrors.length > 0) {
-      return res.status(400).json({ errors: validationErrors });
-    }
-    if (images.length === 0) {
-      return res.status(400).json({ error: "At least one image is required" });
-    }
+    console.log("🛒 Processing product creation");
+    console.log("Request body:", req.body);
+    console.log("Files received:", req.files ? req.files.length : 0);
+    
     try {
+      const { name, description, category, tags, price, stock, email } = req.body;
+      
+      if (!req.files || req.files.length === 0) {
+        return res.status(400).json({ error: "No images uploaded. At least one image is required." });
+      }
+      
+      // Map uploaded files to accessible URLs
+      const images = req.files.map((file) => {
+        console.log("Processing file:", file.originalname, "->", file.path);
+        return `/products/${path.basename(file.path)}`;
+      });
+      
+      // Validate input data
+      const validationErrors = validateProductData({
+        name,
+        description,
+        category,
+        price,
+        stock,
+        email,
+      });
+      
+      if (validationErrors.length > 0) {
+        console.log("Validation errors:", validationErrors);
+        return res.status(400).json({ errors: validationErrors });
+      }
+      
+      // Find user by email
+      console.log("Looking for user with email:", email);
       const user = await User.findOne({ email });
       if (!user) {
-        return res
-          .status(400)
-          .json({ error: "Email does not exist in the users database" });
+        console.log("User not found with email:", email);
+        return res.status(400).json({ error: "Email does not exist in the users database" });
       }
+      console.log("User found:", user._id);
+      
+      // Create new product
       const newProduct = new Product({
         name,
         description,
@@ -61,19 +95,39 @@ router.post(
         email,
         images,
       });
+      
+      console.log("Saving product to database");
       await newProduct.save();
+      console.log("Product saved successfully with ID:", newProduct._id);
+      
       res.status(201).json({
         message: "Product created successfully",
         product: newProduct,
       });
     } catch (err) {
-      console.error(err);
-      res
-        .status(500)
-        .json({ error: "Server error. Could not create product." });
+      console.error("Error creating product:", err);
+      res.status(500).json({ 
+        error: "Server error. Could not create product.",
+        details: err.message 
+      });
     }
   }
 );
+
+// Test route for file uploads
+router.post("/test-upload", pupload.single("testImage"), (req, res) => {
+  console.log("Testing file upload");
+  
+  if (!req.file) {
+    return res.status(400).json({ error: "No file uploaded" });
+  }
+  
+  console.log("File uploaded:", req.file);
+  return res.status(200).json({ 
+    message: "File uploaded successfully",
+    file: req.file
+  });
+});
 
 // Route: Get all products
 router.get("/get-products", async (req, res) => {
@@ -238,16 +292,31 @@ router.get('/cartproducts', isAuthenticatedUser, async (req, res) => {
       if (!email) {
           return res.status(400).json({ error: 'Email query parameter is required' });
       }
+      
+      // Populate cart items with product details
       const user = await User.findOne({ email }).populate({
           path: 'cart.productId',
           model: 'Product'
       });
+      
       if (!user) {
           return res.status(404).json({ error: 'User not found' });
       }
+      
+      // Filter out cart items where the product no longer exists
+      // (productId will be null after populate if the product was deleted)
+      const validCartItems = user.cart.filter(item => item.productId != null);
+      
+      // If some items were filtered out, update the user's cart
+      if (validCartItems.length !== user.cart.length) {
+          console.log(`Removing ${user.cart.length - validCartItems.length} invalid products from cart`);
+          user.cart = validCartItems;
+          await user.save();
+      }
+      
       res.status(200).json({
           message: 'Cart retrieved successfully',
-          cart: user.cart
+          cart: validCartItems
       });
   } catch (err) {
       console.error('Server error:', err);

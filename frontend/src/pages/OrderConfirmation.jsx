@@ -36,15 +36,39 @@ const OrderConfirmation = () => {
                     params: { email },
                 });
                 const cartData = cartResponse.data;
-                // Map cart items to include full image URLs
-                const processedCartItems = cartData.cart.map(item => ({
+                
+                // Check if cart data has the expected structure
+                if (!cartData || !cartData.cart || !Array.isArray(cartData.cart)) {
+                    console.error('Unexpected cart data structure:', cartData);
+                    setError("Unable to load cart data. Please try again later.");
+                    setCartItems([]);
+                    setTotalPrice(0);
+                    return;
+                }
+                
+                // Filter out any cart items with null productId
+                const validCartItems = cartData.cart.filter(item => item && item.productId != null);
+                
+                if (validCartItems.length === 0) {
+                    setError("Your cart is empty or contains invalid products.");
+                    setCartItems([]);
+                    setTotalPrice(0);
+                    return;
+                }
+                
+                // Map cart items to include full image URLs with null checks
+                const processedCartItems = validCartItems.map(item => ({
                     product: item.productId._id,
-                    name: item.productId.name,
-                    price: item.productId.price,
-                    image: item.productId.images.map(imagePath => `http://localhost:3000${imagePath}`),
-                    quantity: item.quantity,
+                    name: item.productId.name || 'Unknown Product',
+                    price: item.productId.price || 0,
+                    image: item.productId.images && item.productId.images.length > 0 
+                        ? item.productId.images.map(imagePath => `http://localhost:3000${imagePath}`)
+                        : ['http://localhost:3000/products/placeholder.jpg'], // Fallback image
+                    quantity: item.quantity || 1,
                 }));
+                
                 setCartItems(processedCartItems);
+                
                 // Calculate total price
                 const total = processedCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
                 setTotalPrice(total);
@@ -69,7 +93,7 @@ const OrderConfirmation = () => {
                 name: item.name,
                 quantity: item.quantity,
                 price: item.price,
-                image: item.images && item.images.length > 0 ? item.images[0] : '/default-avatar.png'
+                image: item.image && item.image.length > 0 ? item.image[0] : '/default-avatar.png'
             }));
             // console.log(orderItems);
             // Construct payload with paymentMethod and optional PayPal data
@@ -93,22 +117,46 @@ const OrderConfirmation = () => {
     };
     if (loading) {
         return (
-            <div className='w-full h-screen flex justify-center items-center'>
-                <p className='text-lg'>Processing...</p>
-            </div>
+            <>
+                <NavBar />
+                <div className='w-full min-h-screen flex justify-center items-center p-4'>
+                    <div className='text-center'>
+                        <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500 mx-auto mb-4'></div>
+                        <p className='text-lg text-gray-700'>Loading your order details...</p>
+                    </div>
+                </div>
+            </>
         );
     }
+    
     if (error) {
         return (
-            <div className='w-full h-screen flex flex-col justify-center items-center'>
-                <p className='text-red-500 text-lg mb-4'>Error: {error}</p>
-                <button
-                    onClick={() => window.location.reload()}
-                    className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600'
-                >
-                    Retry
-                </button>
-            </div>
+            <>
+                <NavBar />
+                <div className='w-full min-h-screen flex flex-col justify-center items-center p-4'>
+                    <div className='bg-red-50 border border-red-200 rounded-lg p-6 max-w-md w-full text-center'>
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-12 w-12 text-red-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <h2 className='text-xl font-bold text-red-700 mb-2'>Something went wrong</h2>
+                        <p className='text-red-600 mb-6'>{error}</p>
+                        <div className='flex flex-col sm:flex-row gap-3 justify-center'>
+                            <button
+                                onClick={() => navigate('/cart')}
+                                className='px-4 py-2 bg-gray-200 text-gray-800 rounded hover:bg-gray-300 transition-colors'
+                            >
+                                Return to Cart
+                            </button>
+                            <button
+                                onClick={() => window.location.reload()}
+                                className='bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600'
+                            >
+                                Retry
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </>
         );
     }
     return (
@@ -137,8 +185,8 @@ const OrderConfirmation = () => {
                         <h3 className='text-xl font-medium mb-2'>Cart Items</h3>
                         {cartItems.length > 0 ? (
                             <div className='space-y-4'>
-                                {cartItems.map((item) => (
-                                    <div key={item._id} className='flex justify-between items-center border p-4 rounded-md'>
+                                {cartItems.map((item, index) => (
+                                    <div key={item.product || index} className='flex justify-between items-center border p-4 rounded-md'>
                                         <div className='flex items-center'>
                                             <img
                                                 src={item.image && item.image.length > 0 ? item.image[0] : '/default-avatar.png'} // Use first image or fallback

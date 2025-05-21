@@ -71,7 +71,7 @@ router.post(
     // Generate JWT token
     const token = jwt.sign(
       { id: user._id, email: user.email },
-      process.env.JWT_SECRET || "your_jwt_secret",
+      process.env.JWT_SECRET || "randomtoken1234567890",
       { expiresIn: "1h" }
   );
 
@@ -79,14 +79,16 @@ router.post(
   res.cookie("token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production", // use true in production
-      sameSite: "Strict",
+      sameSite: "Lax", // Changed from Strict to Lax for better cross-site compatibility
       maxAge: 3600000, // 1 hour
+      path: "/", // Ensure cookie is available for all paths
   });
 
   user.password = undefined; // Remove password from response
     res.status(200).json({
         success: true,
         user,
+        token, // Include token in response for frontend storage
     });
 }));
 
@@ -147,7 +149,33 @@ router.get("/addresses", catchAsyncErrors(async (req, res, next) => {
       success: true,
       addresses: user.addresses,
   });
-}
-));
+}));
+
+// Logout user
+router.get("/logout", catchAsyncErrors(async (req, res, next) => {
+  res.cookie("token", "", {
+    httpOnly: true,
+    expires: new Date(0),
+    path: "/"
+  });
+  
+  res.status(200).json({
+    success: true,
+    message: "Logged out successfully"
+  });
+}));
+
+// Check authentication status
+router.get("/check-auth", isAuthenticatedUser, catchAsyncErrors(async (req, res) => {
+  res.status(200).json({
+    success: true,
+    message: "User is authenticated",
+    user: {
+      id: req.user._id,
+      email: req.user.email,
+      name: req.user.name
+    }
+  });
+}));
 
 module.exports = router;

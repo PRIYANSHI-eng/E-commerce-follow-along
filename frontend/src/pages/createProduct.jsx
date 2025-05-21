@@ -1,8 +1,34 @@
 import { useState, useEffect } from "react";
 import axios from '../axiosConfig';
 import { useParams, useNavigate } from "react-router-dom";
-import { AiOutlinePlusCircle } from "react-icons/ai";
 import NavBar from "../components/auth/nav";
+
+// Helper function to check authentication
+const checkAuth = async () => {
+  try {
+    // First check if we have a token in localStorage
+    const token = localStorage.getItem('token');
+    if (!token) {
+      console.log("No token found in localStorage");
+      return false;
+    }
+    
+    console.log("Checking authentication status with server...");
+    const response = await axios.get('/api/v2/user/check-auth');
+    console.log("Auth check response:", response.data);
+    return response.data.success;
+  } catch (error) {
+    console.error("Authentication check failed:", error);
+    if (error.response) {
+      console.log("Error response:", error.response.data);
+      // If token is invalid, remove it
+      if (error.response.status === 401) {
+        localStorage.removeItem('token');
+      }
+    }
+    return false;
+  }
+};
 
 const CreateProduct = () => {
   const { id } = useParams();
@@ -26,79 +52,188 @@ const CreateProduct = () => {
   ];
 
   useEffect(() => {
-      if (isEdit) {
-          axios
-              .get(`/api/v2/product/product/${id}`)
-              .then((response) => {
-                  const p = response.data.product;
-                  setName(p.name);
-                  setDescription(p.description);
-                  setCategory(p.category);
-                  setTags(p.tags || "");
-                  setPrice(p.price);
-                  setStock(p.stock);
-                  setEmail(p.email);
-                  if (p.images && p.images.length > 0) {
-                      setPreviewImages(
-                          p.images.map((imgPath) => `http://localhost:3000${imgPath}`)
-                      );
+      // First check if user is authenticated
+      const verifyAuth = async () => {
+          // Check for token in localStorage first
+          const token = localStorage.getItem('token');
+          if (!token) {
+              console.log("No token found in localStorage");
+              alert("You need to be logged in to create or edit products");
+              navigate("/login"); // Redirect to login page
+              return;
+          }
+          
+          try {
+              // Verify with server
+              const isAuthenticated = await checkAuth();
+              if (!isAuthenticated) {
+                  alert("Your session has expired. Please login again.");
+                  navigate("/login"); // Redirect to login page
+                  return;
+              }
+              
+              // If editing, fetch product details
+              if (isEdit) {
+                  try {
+                      const response = await axios.get(`/api/v2/product/product/${id}`);
+                      const p = response.data.product;
+                      setName(p.name);
+                      setDescription(p.description);
+                      setCategory(p.category);
+                      setTags(p.tags || "");
+                      setPrice(p.price);
+                      setStock(p.stock);
+                      setEmail(p.email);
+                      if (p.images && p.images.length > 0) {
+                          setPreviewImages(
+                              p.images.map((imgPath) => `http://localhost:3000${imgPath}`)
+                          );
+                      }
+                  } catch (err) {
+                      console.error("Error fetching product:", err);
+                      if (err.response && err.response.status === 401) {
+                          alert("Your session has expired. Please login again.");
+                          navigate("/login");
+                      }
                   }
-              })
-              .catch((err) => {
-                  console.error("Error fetching product:", err);
-              });
-      }
-  }, [id, isEdit]);
+              }
+          } catch (err) {
+              console.error("Authentication error:", err);
+              alert("Authentication failed. Please login again.");
+              navigate("/login");
+          }
+      };
+      
+      verifyAuth();
+  }, [id, isEdit, navigate]);
 
   const handleImagesChange = (e) => {
     const files = Array.from(e.target.files);
-    setImages((prevImages) => prevImages.concat(files));
-    const imagePreviews = files.map((file) => URL.createObjectURL(file));
+    
+    // Validate file types and sizes
+    const validFiles = files.filter(file => {
+      // Check file type
+      const validTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        alert(`File "${file.name}" is not a supported image type. Please use JPG, PNG, GIF or WebP.`);
+        return false;
+      }
+      
+      // Check file size (5MB limit)
+      if (file.size > 5 * 1024 * 1024) {
+        alert(`File "${file.name}" exceeds the 5MB size limit.`);
+        return false;
+      }
+      
+      return true;
+    });
+    
+    if (validFiles.length === 0) return;
+    
+    console.log("Adding files:", validFiles.map(f => f.name));
+    setImages((prevImages) => prevImages.concat(validFiles));
+    
+    const imagePreviews = validFiles.map((file) => URL.createObjectURL(file));
     setPreviewImages((prevPreviews) => prevPreviews.concat(imagePreviews));
   };
 
   const handleSubmit = async (e) => {
       e.preventDefault();
+      
+      // Check authentication before submitting
+      const isAuthenticated = await checkAuth();
+      if (!isAuthenticated) {
+          alert("You need to be logged in to create or edit products");
+          navigate("/login");
+          return;
+      }
+      
+      // Validate form data
+      if (!name || !description || !category || !price || !stock || !email) {
+          alert("Please fill in all required fields");
+          return;
+      }
+      
+      if (images.length === 0 && !isEdit) {
+          alert("Please upload at least one image");
+          return;
+      }
+      
+      // Create FormData object
       const formData = new FormData();
-        formData.append("name", name);
-        formData.append("description", description);
-        formData.append("category", category);
-        formData.append("tags", tags);
-        formData.append("price", price);
-        formData.append("stock", stock);
-        formData.append("email", email);
+      formData.append("name", name);
+      formData.append("description", description);
+      formData.append("category", category);
+      formData.append("tags", tags || "");
+      formData.append("price", price);
+      formData.append("stock", stock);
+      formData.append("email", email);
 
-        images.forEach((image) => {
-            formData.append("images", image);
-        });
+      // Log what we're sending
+      console.log("Submitting product with data:", {
+          name, description, category, tags, price, stock, email,
+          imageCount: images.length
+      });
+      
+      // Add images to FormData
+      images.forEach((image, index) => {
+          console.log(`Adding image ${index + 1}:`, image.name);
+          formData.append("images", image);
+      });
 
-        try {
+      try {
           if (isEdit) {
-            const response = await axios.put(`/api/v2/product/update-product/${id}`,formData);
-            if (response.status === 200) {
-                alert("Product updated successfully!");
-                navigate("/my-products");
-            }
-        } else {
-            const response = await axios.post("/api/v2/product/create-product", formData);
-            if (response.status === 201) {
-                alert("Product created successfully!");
-                setImages([]);
-                setPreviewImages([]);
-                setName("");
-                setDescription("");
-                setCategory("");
-                setTags("");
-                setPrice("");
-                setStock("");
-                setEmail("");
-            }
-        }
-    } catch (err) {
-            console.error("Error creating/updating product:", err);
-            alert("Failed to save product. Please check the data and try again.");
-        }
-    };
+              console.log("Updating product with ID:", id);
+              const response = await axios.put(`/api/v2/product/update-product/${id}`, formData);
+              console.log("Update response:", response.data);
+              
+              if (response.status === 200) {
+                  alert("Product updated successfully!");
+                  navigate("/my-products");
+              }
+          } else {
+              console.log("Creating new product");
+              const response = await axios.post("/api/v2/product/create-product", formData);
+              console.log("Create response:", response.data);
+              
+              if (response.status === 201) {
+                  alert("Product created successfully!");
+                  setImages([]);
+                  setPreviewImages([]);
+                  setName("");
+                  setDescription("");
+                  setCategory("");
+                  setTags("");
+                  setPrice("");
+                  setStock("");
+                  setEmail("");
+              }
+          }
+      } catch (err) {
+          console.error("Error creating/updating product:", err);
+          
+          if (err.response) {
+              console.log("Error response:", err.response.data);
+              
+              if (err.response.status === 401) {
+                  alert("Your session has expired. Please login again.");
+                  navigate("/login");
+              } else if (err.response.status === 400) {
+                  // Handle validation errors
+                  const errorMessage = err.response.data.errors 
+                      ? "Validation errors: " + err.response.data.errors.join(", ")
+                      : err.response.data.error || "Invalid data submitted";
+                  alert(errorMessage);
+              } else if (err.response.status === 500) {
+                  alert("Server error: " + (err.response.data.details || "Unknown server error"));
+              } else {
+                  alert("Error: " + (err.response.data.error || "Failed to save product"));
+              }
+          } else {
+              alert("Network error. Please check your connection and try again.");
+          }
+      }
+  };
 
     return (
         <>
