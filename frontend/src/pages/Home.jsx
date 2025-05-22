@@ -2,38 +2,65 @@ import React, { useEffect, useState } from "react";
 import Product from "../components/auth/Product";
 import NavBar from "../components/auth/nav";
 import axios from "../axiosConfig";
+import ButtonTest from "../components/common/ButtonTest";
+import { useNavigate } from "react-router-dom";
 
 export default function Home() {
-const [products, setProducts] = useState([]);
-const [loading, setLoading] = useState(true); // For loading state
-const [error, setError] = useState(null); // For error handling
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true); // For loading state
+  const [error, setError] = useState(null); // For error handling
+  const navigate = useNavigate();
 
-useEffect(() => {
-  axios.get("/api/v2/product/get-products")
-    .then((res) => {
-      setProducts(res.data.products);
-      setLoading(false);
-    })
-    .catch((err) => {
-      console.error("Error fetching products:", err);
-      setError(err.message);
-      setLoading(false);
-    });
-}, []);
-if (loading) {
-  return (
-    <div className="text-center text-white mt-10">Loading products...</div>
-  );
-}
-if (error) {
-  return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
-}
+  useEffect(() => {
+    axios.get("/api/v2/product/get-products")
+      .then((res) => {
+        setProducts(res.data.products);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("Error fetching products:", err);
+        setError(err.message);
+        setLoading(false);
+      });
+  }, []);
+
+  const handleDirectClick = (id) => {
+    navigate(`/product/${id}`);
+  };
+
+  if (loading) {
+    return (
+      <div className="text-center text-white mt-10">Loading products...</div>
+    );
+  }
+  
+  if (error) {
+    return <div className="text-center text-red-500 mt-10">Error: {error}</div>;
+  }
 
   return (
     <>
       <NavBar />
       <div className="w-full min-h-screen bg-neutral-800">
         <h1 className="text-3xl text-center text-white py-6">Product Gallery</h1>
+        
+        {/* Test button section */}
+        <div className="bg-white p-4 mx-4 mb-4 rounded-lg">
+          <ButtonTest />
+          
+          {products.length > 0 && (
+            <div className="mt-4">
+              <p className="text-gray-700 mb-2">Direct navigation test:</p>
+              <button 
+                className="btn-primary"
+                onClick={() => handleDirectClick(products[0]._id)}
+              >
+                View First Product
+              </button>
+            </div>
+          )}
+        </div>
+        
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 p-4">
           {products.map((product) => (
             <Product key={product._id} {...product} />

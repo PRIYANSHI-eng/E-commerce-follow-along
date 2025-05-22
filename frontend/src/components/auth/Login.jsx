@@ -1,23 +1,42 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { AiOutlineEye, AiOutlineEyeInvisible } from "react-icons/ai";
+import { FaGoogle, FaFacebook, FaEnvelope, FaLock } from "react-icons/fa";
 import styles from "../../styles/styles";
 import axios from "../../axiosConfig"; // Use the configured axios instance
 import { useDispatch } from "react-redux";
 import { setemail } from "../../store/userActions";
 import { useNavigate } from "react-router-dom"; // Import useNavigate
+import "../../styles/auth.css"; // Import our new auth styles
+import AnimatedInput from "../common/AnimatedInput";
+import AnimatedButton from "../common/AnimatedButton";
 
 const Login = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate(); // Initialize navigate
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [visible, setVisible] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState("");
+  const [formState, setFormState] = useState("initial"); // initial, submitting, success, error
+
+  // Animation effect when component mounts
+  useEffect(() => {
+    const card = document.querySelector('.auth-card');
+    if (card) {
+      card.classList.add('auth-fade-in');
+    }
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError("");
+    setFormState("submitting");
+    setIsLoading(true);
+    
     try {
       const response = await axios.post("/api/v2/user/login", { email, password });
-      console.log(response.data);
       
       // Store user info in localStorage
       if (response.data.user) {
@@ -29,108 +48,150 @@ const Login = () => {
         localStorage.setItem("token", response.data.token);
       }
       
-      alert("Logged in successfully!");
       // Dispatch email to Redux state
       dispatch(setemail(email));
-      // Redirect to home or profile page after successful login
-      navigate("/");
+      
+      // Set success state
+      setFormState("success");
+      
+      // Redirect after a short delay to show success animation
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+      
     } catch (error) {
       console.error("There was an error logging in!", error);
-      alert("Login failed. Please check your credentials.");
+      setError(error.response?.data?.message || "Login failed. Please check your credentials.");
+      setFormState("error");
+      
+      // Shake animation for error
+      const form = document.querySelector('form');
+      if (form) {
+        form.classList.add('auth-error-shake');
+        setTimeout(() => form.classList.remove('auth-error-shake'), 500);
+      }
+    } finally {
+      setIsLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setVisible(!visible);
+  };
+
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="auth-container">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-          Login to your account
+        <h2 className="auth-heading animate-fade-in">
+          Welcome Back
         </h2>
       </div>
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="auth-card">
+          {error && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4 auth-error-message">
+              {error}
+            </div>
+          )}
+          
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1">
-                <input
-                  type="email"
-                  name="email"
-                  autoComplete="email"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-              </div>
+            <div className="animate-fade-in delay-100">
+              <AnimatedInput
+                type="email"
+                name="email"
+                label="Email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="your@email.com"
+                required
+                autoComplete="email"
+                icon={<FaEnvelope className="text-gray-400" size={16} />}
+              />
             </div>
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  type={visible ? "text" : "password"}
-                  name="password"
-                  autoComplete="current-password"
-                  required
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="appearance-none block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                />
-                {visible ? (
-                  <AiOutlineEye
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(false)}
-                  />
-                ) : (
-                  <AiOutlineEyeInvisible
-                    className="absolute right-2 top-2 cursor-pointer"
-                    size={25}
-                    onClick={() => setVisible(true)}
-                  />
-                )}
-              </div>
+            <div className="animate-fade-in delay-200">
+              <AnimatedInput
+                type={visible ? "text" : "password"}
+                name="password"
+                label="Password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="••••••••"
+                required
+                autoComplete="current-password"
+                icon={<FaLock className="text-gray-400" size={16} />}
+                rightIcon={
+                  visible ? (
+                    <AiOutlineEye size={20} className="text-gray-500" />
+                  ) : (
+                    <AiOutlineEyeInvisible size={20} className="text-gray-500" />
+                  )
+                }
+                onRightIconClick={togglePasswordVisibility}
+              />
             </div>
 
-            <div className={`${styles.flexBetween}`}>
+            <div className={`${styles.flexBetween} animate-fade-in delay-300`}>
               <div className={`${styles.normalFlex}`}>
                 <input
                   type="checkbox"
                   name="remember-me"
                   id="remember-me"
-                  className="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded"
+                  checked={rememberMe}
+                  onChange={() => setRememberMe(!rememberMe)}
+                  className="auth-checkbox"
                 />
-                <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
+                <label htmlFor="remember-me" className="ml-2 auth-checkbox-label">
                   Remember me
                 </label>
               </div>
               <div className="text-sm">
                 <a
                   href=".forgot-password"
-                  className="font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200"
+                  className="auth-link"
                 >
                   Forgot your password?
                 </a>
               </div>
             </div>
 
-            <div>
-              <button
+            <div className="animate-fade-in delay-400">
+              <AnimatedButton
                 type="submit"
-                className="btn-primary w-full h-10 flex justify-center items-center"
+                fullWidth
+                loading={isLoading}
+                disabled={isLoading}
+                variant={formState === "success" ? "success" : "primary"}
+                className="py-3"
               >
-                Sign In
-              </button>
+                {formState === "success" ? "Success!" : "Sign In"}
+              </AnimatedButton>
             </div>
 
-            <div className={`${styles.normalFlex} w-full justify-center mt-4`}>
+            <div className="auth-divider animate-fade-in delay-500">
+              <span className="auth-divider-text">or continue with</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-3 animate-fade-in delay-500">
+              <AnimatedButton
+                type="button"
+                variant="outline"
+                icon={<FaGoogle size={18} className="text-[#EA4335]" />}
+              >
+                Google
+              </AnimatedButton>
+              <AnimatedButton
+                type="button"
+                variant="outline"
+                icon={<FaFacebook size={18} className="text-[#1877F2]" />}
+              >
+                Facebook
+              </AnimatedButton>
+            </div>
+
+            <div className={`${styles.normalFlex} w-full justify-center mt-4 animate-fade-in delay-500`}>
               <p className="text-gray-600">Don&#39;t have an account?</p>
-              <a href="/signup" className="ml-2 font-medium text-primary-600 hover:text-primary-500 transition-colors duration-200">
+              <a href="/signup" className="ml-2 auth-link">
                 Sign up
               </a>
             </div>

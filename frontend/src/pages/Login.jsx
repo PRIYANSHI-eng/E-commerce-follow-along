@@ -1,10 +1,11 @@
 import Login from "../components/auth/Login"
+import PageTransition from "../components/common/PageTransition"
 
 function LoginPage() {
   return (
-    <div>
+    <PageTransition>
       <Login />
-    </div>
+    </PageTransition>
   )
 }
 

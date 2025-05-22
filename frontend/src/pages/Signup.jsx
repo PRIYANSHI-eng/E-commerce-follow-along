@@ -1,10 +1,13 @@
 import React from 'react'
 import Signup from "../components/auth/Signup"
+import PageTransition from "../components/common/PageTransition"
+
 function SignupPage() {
   return (
-    <div>
-    <Signup/>
-  </div>
+    <PageTransition>
+      <Signup />
+    </PageTransition>
   )
 }
+
 export default SignupPage;
