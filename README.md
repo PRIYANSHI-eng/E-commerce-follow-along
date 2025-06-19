@@ -406,8 +406,7 @@ Submission Details
 Code pushed to GitHub repository.
 Repository is publicly accessible.
 
-=======
-=======
+
 
 
 ### Milestone 23: Implementing Place Order & Select Address Page
@@ -429,7 +428,6 @@ Submission Details
 Code pushed to GitHub ✅
 Repository is publicly accessible ✅
 README updated ✅
-=======
 
 
 
